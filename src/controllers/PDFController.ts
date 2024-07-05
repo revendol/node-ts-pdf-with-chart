@@ -26,7 +26,7 @@ interface Keyword {
   currentRanking: number | string;
   previousRanking: number | string;
   beforeSeoRanking: string;
-  beforeSeoRankingChange: string,
+  beforeSeoRankingChange: string;
   rankings: number[];
 }
 
@@ -42,16 +42,14 @@ class PDFController {
                       errors: validate.message
                   }));
             }
-            const uniqueKeywords = new Set();
             let keywords : Keyword[] = [];
             let xAxis : string[] = [];
 
             req.body.tracking.forEach((item : any) => {
-              uniqueKeywords.add(item.keyword);
               const axis = item.rankings.map((rank: DateValuePair) => HelperFunctions.convertDateToMonthYear(rank[0]));
               if(axis.length > xAxis.length) xAxis = axis;
               keywords.push({
-                keyword: item.keyword,
+                keyword: `${item.keyword} (${item.trackingType})`,
                 currentRanking: 'N/A',
                 previousRanking:'N/A',
                 beforeSeoRanking: "Not in top 100",
@@ -61,7 +59,7 @@ class PDFController {
             });
             let data = {
               domain: req.body.domain,
-              totalKeywords: uniqueKeywords.size || 0,
+              totalKeywords: keywords.length || 0,
               firstPageRanking: 0,
               secondPageRanking: 'N/A',
               improvedRanking: 'N/A',

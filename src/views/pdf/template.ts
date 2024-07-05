@@ -40,8 +40,10 @@ const template = function (data: any) : string {
   });
   const xAxis = JSON.stringify(data.xAxis);
   const series = JSON.stringify(data.keywords.map((keyword: any) => {return {
-    name: keyword.keyword.toUpperCase(),
-    data: keyword.rankings
+    label: keyword.keyword.toUpperCase(),
+    data: keyword.rankings,
+    pointRadius: 5,
+    lineTension: 0.5,
   }}));
   return `<html lang="en"><head>
     <meta charset="UTF-8">
@@ -49,7 +51,7 @@ const template = function (data: any) : string {
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Report of ${data.domain}</title>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         html {
             -webkit-print-color-adjust: exact;
@@ -125,7 +127,9 @@ const template = function (data: any) : string {
     </p>
     <div style="border-top: 2px dotted #ffffff; margin: 20px 0;"></div>
 </div>
-<div id="chart"></div>
+<div>
+<canvas id="myChart"></canvas>
+</div>
 <div style="position: relative; width: 100%;margin-bottom: 20px;">
     <p style="background: #2D2973;padding-left: 10px;color: #ffffff;position:absolute;top: -30px;display: flex;align-items: center;">
         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
@@ -196,67 +200,46 @@ const template = function (data: any) : string {
     </div>
 </div>
 <script>
+    const ctx = document.getElementById('myChart');
     const series = JSON.parse('${series}');
     const xAxis = JSON.parse('${xAxis}');
-    var options = {
-        chart: {
-            type: 'line',
-            toolbar: {
-                show: false
-            },
-            height: 220,
+    new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: xAxis,
+      datasets: series
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+              color: "#fff",
+          },
         },
-        series: series,
-        grid: {
-            show: true,
-            borderColor: '#26225F',
-            strokeDashArray: 0,
-            position: 'back',
-        },
-        xaxis: {
-            categories: xAxis,
-            labels: {
-                style: {
-                    colors: '#ffffff',
-                }
-            },
-            axisBorder: {
-                show: false
-            }
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    colors: '#ffffff',
-                }
-            },
-            axisBorder: {
-                show: false
-            }
-        },
-        markers: {
-            size: 6,
-            strokeWidth: 3,
-            fillOpacity: 0,
-            strokeOpacity: 0,
-            label: {show: false}
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 4
-        },
-        legend: {
-            show: true,
-            position: 'top',
-            horizontalAlign: 'left',
-            labels: {
-                colors: '#ffffff'
-            }
+        x: {
+          ticks: {
+              color: "#fff",
+          },
+          grid: {
+              display: false,
+          }
         }
+      },
+      bezierCurve: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'start',
+          labels: {
+            usePointStyle: true,
+            color: "#fff",
+          },
+        }
+      }
     }
-
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
+  });
 </script>
 </body>
 </html>`
