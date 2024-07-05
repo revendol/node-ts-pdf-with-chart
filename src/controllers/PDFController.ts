@@ -1,99 +1,74 @@
 import {Request, Response} from 'express';
 import StatusCodes from 'http-status-codes';
-import {failure, success} from "@shared/response";
+import {failure} from "@shared/response";
 import ErrorMessage from "@shared/errorMessage";
-const {OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, UNPROCESSABLE_ENTITY} = StatusCodes;
+const {OK, INTERNAL_SERVER_ERROR, BAD_REQUEST} = StatusCodes;
 import PDFService from "@services/PDFService";
 import template from "@views/pdf/template";
+import HelperFunctions from "@util/HelperFunctions";
+
+
+type DateValuePair = [string, number];
+
+interface Tracking {
+  trackingType: string;
+  local: boolean;
+  keyword: string;
+  rankings: DateValuePair[];
+}
+
+interface Data {
+  domain: string;
+  tracking: Tracking[];
+}
+interface Keyword {
+  keyword: string;
+  currentRanking: number | string;
+  previousRanking: number | string;
+  beforeSeoRanking: string;
+  beforeSeoRankingChange: string,
+  rankings: number[];
+}
+
 class PDFController {
     async generate(req: Request, res: Response){
         try {
-            const data = {
-                domain: "TRUSTTHEADDATA.NET",
-                totalKeywords: 15,
-                firstPageRanking: 5,
-                secondPageRanking: 5,
-                improvedRanking: 5,
-                currentDate: "Jul 01, 2024",
-                previousDate: "Jun 01, 2024",
-                keywords: [
-                    {
-                        keyword: "keyword 1",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: "+ 100"
-                    },
-                    {
-                        keyword: "keyword 2",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: "+ 100"
-                    },
-                    {
-                        keyword: "keyword 3",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: "+ 100"
-                    },
-                    {
-                        keyword: "keyword 4",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: "+ 100"
-                    },
-                    {
-                        keyword: "keyword 5",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: "+ 100"
-                    }
-                ],
-                improvedKeywords: [
-                    {
-                        keyword: "keyword 6",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: 100
-                    },
-                    {
-                        keyword: "keyword 7",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: 100
-                    },
-                    {
-                        keyword: "keyword 8",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: 100
-                    },
-                    {
-                        keyword: "keyword 9",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: 100
-                    },
-                    {
-                        keyword: "keyword 10",
-                        currentRanking: 1,
-                        previousRanking: 1,
-                        beforeSeoRanking: "Not in top 100",
-                        beforeSeoRankingChange: 100
-                    }
-                ],
-                chartData: {
-                    rankings: [12.5, 15, 12, 5, 6, 7, 7, 7, 6, 5, 7.5, 7.5],
-                    xAxisData: ["Jan-24","Feb-24","Mar-24","Apr-24","May-24","Jun-24","Jul-24","Aug-24","Sep-24","Oct-24","Nov-24","Dec-24"]
-                }
+            const validate = PDFService.validateRequest(req.body);
+            if(!validate.valid){
+                return res
+                  .status(BAD_REQUEST)
+                  .send(failure({
+                      message: ErrorMessage.HTTP_BAD_REQUEST,
+                      errors: validate.message
+                  }));
+            }
+            const uniqueKeywords = new Set();
+            let keywords : Keyword[] = [];
+            let xAxis : string[] = [];
+
+            req.body.tracking.forEach((item : any) => {
+              uniqueKeywords.add(item.keyword);
+              const axis = item.rankings.map((rank: DateValuePair) => HelperFunctions.convertDateToMonthYear(rank[0]));
+              if(axis.length > xAxis.length) xAxis = axis;
+              keywords.push({
+                keyword: item.keyword,
+                currentRanking: 'N/A',
+                previousRanking:'N/A',
+                beforeSeoRanking: "Not in top 100",
+                beforeSeoRankingChange: "+ 100",
+                rankings: item.rankings.map((rank: DateValuePair) => rank[1] || 0)
+              })
+            });
+            let data = {
+              domain: req.body.domain,
+              totalKeywords: uniqueKeywords.size || 0,
+              firstPageRanking: 0,
+              secondPageRanking: 5,
+              improvedRanking: 5,
+              currentDate: HelperFunctions.formatCurrentAndPrevDate().currentDate,
+              previousDate: HelperFunctions.formatCurrentAndPrevDate().previousDate,
+              xAxis,
+              keywords
             };
             const pdfBuffer = await PDFService.generatePdf(template(data));
             res.setHeader('Content-Type', 'application/pdf');

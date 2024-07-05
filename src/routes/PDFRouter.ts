@@ -8,7 +8,7 @@ export const p = {
     generate: '/generate'
 } as const;
 
-router.get(
+router.post(
     p.generate,
     PDFController.generate
 );

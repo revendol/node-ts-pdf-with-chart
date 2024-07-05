@@ -38,7 +38,11 @@ const template = function (data: any) : string {
         </td>
     </tr>`;
   });
-  const chartData = JSON.stringify(data.chartData);
+  const xAxis = JSON.stringify(data.xAxis);
+  const series = JSON.stringify(data.keywords.map((keyword: any) => {return {
+    name: keyword.keyword.toUpperCase(),
+    data: keyword.rankings
+  }}));
   return `<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -192,19 +196,17 @@ const template = function (data: any) : string {
     </div>
 </div>
 <script>
-    const dynamicData = JSON.parse('${chartData}');
+    const series = JSON.parse('${series}');
+    const xAxis = JSON.parse('${xAxis}');
     var options = {
         chart: {
-            type: 'area',
+            type: 'line',
             toolbar: {
                 show: false
             },
             height: 220,
         },
-        series: [{
-            name: 'Ranking',
-            data: dynamicData.rankings
-        }],
+        series: series,
         grid: {
             show: true,
             borderColor: '#26225F',
@@ -212,7 +214,7 @@ const template = function (data: any) : string {
             position: 'back',
         },
         xaxis: {
-            categories: dynamicData.xAxisData,
+            categories: xAxis,
             labels: {
                 style: {
                     colors: '#ffffff',
@@ -243,6 +245,14 @@ const template = function (data: any) : string {
             curve: 'smooth',
             width: 4
         },
+        legend: {
+            show: true,
+            position: 'top',
+            horizontalAlign: 'left',
+            labels: {
+                colors: '#ffffff'
+            }
+        }
     }
 
     var chart = new ApexCharts(document.querySelector("#chart"), options);
