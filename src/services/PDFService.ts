@@ -6,7 +6,7 @@ class PDFService {
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
         //await page.waitForTimeout(5000); // Ensure chart is rendered
-        const pdfBuffer = await page.pdf({ format: 'A4' });
+        const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
         await browser.close();
         return pdfBuffer;
     }

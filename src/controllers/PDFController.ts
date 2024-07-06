@@ -57,7 +57,7 @@ class PDFController {
                 rankings: item.rankings.map((rank: DateValuePair) => rank[1] || 0)
               })
             });
-            let data = {
+            const data = {
               domain: req.body.domain,
               totalKeywords: keywords.length || 0,
               firstPageRanking: 0,

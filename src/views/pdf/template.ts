@@ -45,7 +45,7 @@ const template = function (data: any) : string {
     pointRadius: 5,
     lineTension: 0.5,
   }}));
-  return `<html lang="en"><head>
+  return `<!DOCTYPE html><html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -55,9 +55,23 @@ const template = function (data: any) : string {
     <style>
         html {
             -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+        @media print {
+            @page {
+                  margin: 0;
+                  background-color: #2D2973 !important;
+              }
+            html, body {
+                background-color: #2D2973!important;
+            }
         }
         th{
-            padding: 10px 20px;
+            padding: 10px 15px;
             text-align: center;
         }
         tr{
@@ -74,7 +88,7 @@ const template = function (data: any) : string {
             font-size: 12px;
         }
         td{
-            padding: 10px 20px;
+            padding: 5px 15px;
             text-align: center;
         }
         tr:last-child td:first-child{
@@ -88,7 +102,8 @@ const template = function (data: any) : string {
         }
     </style>
 </head>
-<body style="background-color: #2D2973; margin: 0; padding: 50px;font-family: Arial;">
+<body>
+<div style="padding: 50px;">
 <h1 style="font-size: 40px;color: #ffffff; text-transform: uppercase;text-align: center;">SEARCH ENGINE RANKINGS</h1>
 <h2 style="text-align: center;margin-bottom: 55px;">
     <span style="font-size: 25px; text-transform: uppercase; color:#ffffff;padding: 10px 40px;background: #7768DF;border-radius: 30px;">${data.domain}</span>
@@ -198,6 +213,7 @@ const template = function (data: any) : string {
             <span style="display: inline-block; height: 5px; width: 30px;background-color: #FF2F5E;margin-top: 10px;border-radius: 3px;"></span>
         </p>
     </div>
+</div>
 </div>
 <script>
     const ctx = document.getElementById('myChart');
