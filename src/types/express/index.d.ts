@@ -6,6 +6,6 @@ import 'express';
 declare module 'express' {
 
   export interface Request {
-    token?: any;
+    token?: string;
   }
 }

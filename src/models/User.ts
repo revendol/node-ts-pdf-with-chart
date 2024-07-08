@@ -11,8 +11,8 @@ export interface IUser {
   customID?: string;
 }
 const validateEmail = (email: string) => {
-  return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
-}
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
 
 // Create a Schema corresponding to the document interface.
 const userSchema = new Schema<IUser>({
@@ -53,7 +53,7 @@ userSchema.pre('save', function (next) {
   const random = Math.floor((Math.random() * 10000) + 1);
   this.customID = `TST${date.getDay()}${date.getMonth()}${date.getFullYear()}${random}`;
   next();
-})
+});
 // Create a Model.
 export default model<IUser>('User', userSchema);
 

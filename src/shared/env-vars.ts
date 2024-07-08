@@ -26,22 +26,5 @@ export default {
     access: (process.env.AWS_ACCESS_KEY ?? ''),
     region: (process.env.AWS_REGION ?? 'us-east-1'),
     bucket: (process.env.BUCKET_NAME ?? 'bucket_name')
-  },
-  mongoDB: {
-    // url: (process.env.MONGO_CONN_URL ?? 'mongodb+srv://radoan:radoan151@cluster0.ik1jr.mongodb.net/nearestLaundry?retryWrites=true&w=majority')
-    url: (process.env.MONGO_CONN_URL ?? 'mongodb+srv://unmlma:1Oddpdeb@clusterlma.x6tluir.mongodb.net/neemsah')
-  },
-  mailer: {
-     from: (process.env.MAIL_FROM??'noreply@goplexn.com'),
-     mailtrap: {
-       host: "live.smtp.mailtrap.io",
-       port: 2525,
-       secure:false,
-       auth: {
-         user: "api",
-         pass: "0796db4c0e9f0d07d097dbbb56e08b07",
-       }
-     }
-
   }
 } as const;

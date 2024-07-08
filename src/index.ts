@@ -25,8 +25,8 @@ const serverStartMsg = 'Express server started on port: ';
 //     cluster.fork();
 //   });
 // } else {
-  // Start server
-  server.listen(envVars.port, () => {
-    logger.info(serverStartMsg + envVars.port.toString());
-  });
+// Start server
+server.listen(envVars.port, () => {
+  logger.info(serverStartMsg + envVars.port.toString());
+});
 // }
