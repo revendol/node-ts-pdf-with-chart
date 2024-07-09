@@ -23,7 +23,6 @@ class PDFController {
       }
       const keywords: Keyword[] = [];
       let xAxis: string[] = [];
-      let previousDate: string | null = null;
       body.tracking.forEach((item: Tracking) => {
         const axis = item.rankings.map(
           (rank: DateValuePair) =>
@@ -33,31 +32,22 @@ class PDFController {
         if (axis.length > xAxis.length) xAxis = axis;
         //Process ranking data
         const rakingData = PDFService.rankingsData(item.rankings);
-        //Set previous date if not set
-        if(!previousDate) previousDate = rakingData.previousDate;
-        //Set previous ranking to the earliest date
-        let previousRanking : string | number = rakingData.previousRanking;
-        //If the keyword improved ranking then check how much it improved
-        if(previousRanking > rakingData.currentRanking) {
-          previousRanking = `previousRanking - rakingData.currentRanking`;
-        }
         keywords.push({
           keyword: `${item.keyword} (${item.trackingType})`,
           currentRanking: rakingData.currentRanking ?? 'N/A',
-          previousRanking: rakingData.previousRanking ?? 'N/A',
-          initialRanking: "Not in top 100",
-          initialRankingChange: rakingData.rankingChange ?? 'N/A',
+          previousRanking: rakingData.previousData,
+          initialRanking: rakingData.initialData,
           rankings: item.rankings.map((rank: DateValuePair) => rank[1] || 0)
         });
       });
+      const dates = HelperFunctions.formatCurrentAndPrevDate(body.tracking[0].rankings);
       const data : Data = {
         domain: body.domain,
         totalKeywords: keywords.length || 0,
-        firstPageRanking: 0,
-        secondPageRanking: 'N/A',
-        improvedRanking: 'N/A',
-        currentDate: HelperFunctions.formatCurrentAndPrevDate().currentDate,
-        previousDate: HelperFunctions.formatCurrentAndPrevDate().previousDate,
+        improvedRanking: keywords.filter((k: Keyword) =>
+          k.initialRanking.flag === "Improved").length || 0,
+        currentDate: dates.currentDate,
+        previousDate: dates.previousDate,
         xAxis,
         keywords
       };

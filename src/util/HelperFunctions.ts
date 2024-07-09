@@ -1,18 +1,25 @@
+import {DateValuePair} from "../types/Controller/PDF";
+
 class HelperFunctions {
   static convertDateToMonthYear(dateString: string): string {
     //Add 1 to month because months are 0-indexed
-    let [, y, m, d] = dateString.match(/Date.UTC\((\d+),(\d+),(\d+)\)/) || [];
+    const [, y, m, d] = dateString.match(/Date.UTC\((\d+),(\d+),(\d+)\)/) || [];
     const date = new Date(`${y}-${parseInt(m)+1}-${d}`);
     const month = date.toLocaleString('default', {month: 'short'});
     const year = date.getFullYear().toString().slice(-2);
     return `${month}-${year}`;
   }
 
-  static formatCurrentAndPrevDate(): { currentDate: string; previousDate: string } {
-    const currentDate = new Date();
+  static formatCurrentAndPrevDate(rankings: DateValuePair[]): {
+    currentDate: string;
+    previousDate: string
+  } {
+    const minMax = this.getMinMax(rankings);
+    const currentDate = new Date(minMax.maxDate);
     const month = currentDate.toLocaleString('default', {month: 'short'});
-    const previousDate = new Date();
-    previousDate.setDate(previousDate.getDate() - 30);
+    const [, y, m, d] = rankings[minMax.maxIndex - 1][0]
+      .match(/Date.UTC\((\d+),(\d+),(\d+)\)/) || [];
+    const previousDate : Date | string = new Date(`${y}-${parseInt(m)+1}-${d}`);
     const prevMonth = previousDate.toLocaleString('default', {month: 'short'});
     return {
       currentDate: `${month} ${currentDate.getDate()}, ${currentDate.getFullYear()}`,
@@ -20,19 +27,25 @@ class HelperFunctions {
     };
   }
   static formatDate(date: Date): string {
-    const day = ('0' + date.getDate()).slice(-2);
+    const day = ('0' + date.getDate().toString()).slice(-2);
     const month = date.toLocaleString('default', { month: 'short' });
     const year = date.getFullYear().toString().slice(-2);
     return `${month} ${day} , ${year}`;
   }
-  static getMinMax(data: [string, number][]): {
+  static getMinMax(data: DateValuePair[]): {
     minDate: Date | string;
     maxDate: Date | string;
     minRanking: number;
     maxRanking: number;
     maxIndex: number;
   } {
-    if(data.length === 0) return { minDate: 'N/A', maxDate: 'N/A', maxRanking: 0, minRanking: 0, maxIndex: 0 };
+    if(data.length === 0) return {
+      minDate: 'N/A',
+      maxDate: 'N/A',
+      maxRanking: 0,
+      minRanking: 0,
+      maxIndex: 0
+    };
     // Initialize variables for min and max dates
     let minDate: Date | null = null;
     let maxDate: Date | null = null;
@@ -61,8 +74,8 @@ class HelperFunctions {
     });
     // Return the result as Date objects
     return {
-      minDate: this.formatDate(minDate!),
-      maxDate: this.formatDate(maxDate!),
+      minDate: this.formatDate(minDate ?? new Date()),
+      maxDate: this.formatDate(maxDate ?? new Date()),
       minRanking, maxRanking, maxIndex
     };
   }

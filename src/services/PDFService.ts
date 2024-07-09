@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import Validator from 'validatorjs';
-import {ValidationResult, InputData} from "../types/Controller/PDF";
+import {ValidationResult, InputData, ImprovedRanking} from "../types/Controller/PDF";
 import HelperFunctions from "@util/HelperFunctions";
 
 class PDFService {
@@ -34,25 +34,31 @@ class PDFService {
   }
   public rankingsData(rankings: [string, number][]): {
     currentRanking: number;
-    previousRanking: number;
-    rankingChange: number;
-    improvedRanking: number;
-    previousDate: string;
+    previousData: ImprovedRanking;
+    initialData: ImprovedRanking;
   } {
     const minMax = HelperFunctions.getMinMax(rankings);
-    let [, y, m, d] = rankings[minMax.maxIndex - 1][0].match(/Date.UTC\((\d+),(\d+),(\d+)\)/) || [];
-    let previousDate : Date | string = new Date(`${y}-${parseInt(m)+1}-${d}`);
-    const prevMonth = previousDate.toLocaleString('default', {month: 'short'});
-    previousDate = `${prevMonth} ${previousDate.getDate()}, ${previousDate.getFullYear().toString().slice(-2)}`;
-    //Current ranking
-    const currentRanking = minMax.maxRanking;
     //Previous month ranking
-    const previousRanking = rankings[minMax.maxIndex - 1][1];
-    //Ranking change between current and previous month
-    const rankingChange = currentRanking - previousRanking;
-    //Ranking change between current month and very first month
-    const improvedRanking = minMax.maxRanking - minMax.minRanking;
-    return {currentRanking, previousRanking, rankingChange, improvedRanking, previousDate};
+    const pr = rankings[minMax.maxIndex - 1][1];
+    const pc = pr - minMax.maxRanking;
+    const previousData : ImprovedRanking = {
+      flag: pc===0 ? "Same" : pc > 0 ? "Improved" : "Decreased",
+      value: pr > 100 && minMax.maxRanking <=100 ? 'Not In Top 100' : pr,
+      change: pc
+    };
+    //Initial ranking change
+    const rankingChange = minMax.minRanking - minMax.maxRanking;
+    const initialData : ImprovedRanking = {
+      flag: rankingChange===0 ? "Same" : rankingChange > 0 ? "Improved" : "Decreased",
+      value: minMax.minRanking > 100 && minMax.maxRanking <=100 ?
+        'Not In Top 100' : minMax.minRanking,
+      change: rankingChange
+    };
+    return {
+      currentRanking: minMax.maxRanking,
+      previousData,
+      initialData
+    };
   }
 }
 

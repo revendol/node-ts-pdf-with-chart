@@ -4,10 +4,17 @@ const template = function (data: Data): string {
   const locationIcon = `<img 
     src="https://i.ibb.co/64FrgR0/placeholder.png" 
     alt="placeholder" 
+    style="width: 15px; height: 15px;margin-right: 10px;"
     border="0" />`;
   const topArrowIcon = `<img 
     src="https://i.ibb.co/YRfmbcj/top-up.png" 
+    style="width: 15px; height: 15px;margin-right: 10px;"
     alt="top-up" 
+    border="0">`;
+  const downArrowIcon = `<img 
+    src="https://i.ibb.co/FhWn9pt/down.png" 
+    style="width: 15px; height: 15px;margin-right: 10px;"
+    alt="down" 
     border="0">`;
   let tableRows = '';
   data.keywords.forEach((keyword: Keyword) => {
@@ -24,20 +31,53 @@ const template = function (data: Data): string {
           </p>
         </td>
         <td>
-            <p style="previous-ranking">
-                ${locationIcon}
+            <p class="previous-ranking">
+                ${
+  keyword.previousRanking.flag === "Same" ? 
+    locationIcon : keyword.previousRanking.flag === "Improved" ? 
+      topArrowIcon : downArrowIcon}
                 <span>
-                    ${keyword.previousRanking}
+                    ${keyword.previousRanking.value}
                 </span>
+                ${
+  keyword.previousRanking.flag === "Improved" ?
+    `<span class="ranking-change improve">
+        ${keyword.previousRanking.change > 0 ? 
+    `+ ${keyword.previousRanking.change}` : 
+    keyword.previousRanking.change}
+    </span>` : 
+    keyword.previousRanking.flag === "Decreased" ?
+      `<span class="ranking-change decrease">
+        ${keyword.previousRanking.change > 0 ? 
+    `+ ${keyword.previousRanking.change}` : 
+    keyword.previousRanking.change}
+    </span>` : ''
+}
             </p>
         </td>
         <td>
-            <p class="ranking-change-wrapper">
-                ${topArrowIcon}
-                ${keyword.initialRanking} 
-                <span class="ranking-change">
-                    ${keyword.initialRankingChange}
+            <p class="ranking-change-wrapper"> 
+                ${
+  keyword.initialRanking.flag === "Same" ?
+    locationIcon : keyword.initialRanking.flag === "Improved" ?
+      topArrowIcon : downArrowIcon}
+                <span>
+                    ${keyword.initialRanking.value}
                 </span>
+                ${
+  keyword.initialRanking.flag === "Improved" ?
+    `<span class="ranking-change improve">
+        ${keyword.initialRanking.change > 0 ?
+    `+ ${keyword.initialRanking.change}` :
+    keyword.initialRanking.change}
+    </span>` :
+    keyword.initialRanking.flag === "Decreased" ?
+      `<span class="ranking-change decrease">
+        ${keyword.initialRanking.change > 0 ?
+    `+ ${keyword.initialRanking.change}` :
+    keyword.initialRanking.change}
+    </span>` : ''
+}
             </p>
         </td>
     </tr>`;
@@ -64,7 +104,7 @@ const template = function (data: Data): string {
             <meta http-equiv="X-UA-Compatible" 
             content="ie=edge">
             <title>
-                Report of ${data.domain}
+                Report of ${data.domain??'N/A'}
             </title>
             <script 
                 src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -129,7 +169,7 @@ const template = function (data: Data): string {
                 }
                 .ranking-change{
                   color: #39B54A;
-                  font-size: 10px;
+                  font-size: 14px;
                   margin-left: 10px;
                 }
                 .current-ranking{
@@ -274,13 +314,16 @@ const template = function (data: Data): string {
                     margin-top: 10px;
                     border-radius: 3px;
                 }
+                .decrease{
+                    color: #FF2F5E;
+                }
             </style>
         </head>
         <body>
             <div style="padding: 50px;">
                 <h1 class="page-header">SEARCH ENGINE RANKINGS</h1>
                 <h2 style="text-align: center;margin-bottom: 55px;">
-                    <span class="domain">${data.domain}</span>
+                    <span class="domain">${data.domain ?? 'N/A'}</span>
                 </h2>
                 <div class="relative-100">
                     <p class="ranking-text">Ranking</p>
@@ -300,7 +343,7 @@ const template = function (data: Data): string {
                             src="https://i.ibb.co/VtnNC8r/fourth-Icon.png" 
                             alt="FirstIcon" 
                             style="margin-left: 10px;">
-                          <span class="widget-number">${data.improvedRanking}</span>
+                          <span class="widget-number">${data.improvedRanking ?? 'N/A'}</span>
                           <span class="widget-text">Ranking Changes<br>Improved</span>
                       </div>
                   </div>

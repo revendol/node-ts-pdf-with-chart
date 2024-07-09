@@ -14,19 +14,16 @@ export interface InputData {
 export interface Keyword {
   keyword: string;
   currentRanking: number | string;
-  previousRanking: number | string;
-  initialRanking: string;
-  initialRankingChange: number | string;
+  previousRanking: ImprovedRanking;
+  initialRanking: ImprovedRanking;
   rankings: number[];
 }
 
 export interface Data {
-  domain: string;
+  domain?: string;
   totalKeywords: string | number;
-  firstPageRanking: string | number;
-  secondPageRanking: string | number;
   improvedRanking: string | number;
-  currentDate : string | Date;
+  currentDate: string | Date;
   previousDate: string | Date;
   xAxis: string[];
   keywords: Keyword[];
@@ -35,4 +32,10 @@ export interface Data {
 export interface ValidationResult {
   valid: boolean;
   message?: ValidationErrors;
+}
+
+export interface ImprovedRanking {
+  flag: "Same" | "Improved" | "Decreased";
+  value: string | number;
+  change: number;
 }
