@@ -122,7 +122,7 @@ const template = function (data: Data): string {
                           margin: 0;
                           background-color: #2D2973 !important;
                       }
-                    html, body {
+                    .background {
                         background-color: #2D2973!important;
                     }
                 }
@@ -320,7 +320,7 @@ const template = function (data: Data): string {
             </style>
         </head>
         <body>
-            <div style="padding: 50px;">
+            <div class="background" style="padding: 50px;">
                 <h1 class="page-header">SEARCH ENGINE RANKINGS</h1>
                 <h2 style="text-align: center;margin-bottom: 55px;">
                     <span class="domain">${data.domain ?? 'N/A'}</span>
