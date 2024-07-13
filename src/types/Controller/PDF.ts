@@ -39,3 +39,15 @@ export interface ImprovedRanking {
   value: string | number;
   change: number;
 }
+
+export interface ISeries {
+  label: string;
+  data: number[];
+  pointRadius: number;
+  lineTension: number;
+}
+
+export interface IChartAndTable {
+  chart: ISeries[];
+  table: string;
+}

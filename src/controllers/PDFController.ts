@@ -51,7 +51,8 @@ class PDFController {
         xAxis,
         keywords
       };
-      const pdfBuffer = await PDFService.generatePdf(template(data));
+      const tableChart = PDFService.generateChartAndTable(data);
+      const pdfBuffer = await PDFService.generatePdf(template(data, tableChart));
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', 'attachment; filename=report.pdf');
       return res.status(OK).send(pdfBuffer);

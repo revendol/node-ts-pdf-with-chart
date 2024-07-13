@@ -1,96 +1,45 @@
-import {Data, Keyword} from '../../types/Controller/PDF';
+import {Data, IChartAndTable} from '../../types/Controller/PDF';
 
-const template = function (data: Data): string {
-  const locationIcon = `<img 
-    src="https://i.ibb.co/64FrgR0/placeholder.png" 
-    alt="placeholder" 
-    style="width: 15px; height: 15px;margin-right: 10px;"
-    border="0" />`;
-  const topArrowIcon = `<img 
-    src="https://i.ibb.co/YRfmbcj/top-up.png" 
-    style="width: 15px; height: 15px;margin-right: 10px;"
-    alt="top-up" 
-    border="0">`;
-  const downArrowIcon = `<img 
-    src="https://i.ibb.co/FhWn9pt/down.png" 
-    style="width: 15px; height: 15px;margin-right: 10px;"
-    alt="down" 
-    border="0">`;
-  let tableRows = '';
-  data.keywords.forEach((keyword: Keyword) => {
-    tableRows += `<tr>
-        <td style="text-align: left;">
-          ${keyword.keyword}
-        </td>
-        <td>
-          <p class="current-ranking">
-             ${locationIcon}
-             <span>
-                ${keyword.currentRanking}
-             </span>
-          </p>
-        </td>
-        <td>
-            <p class="previous-ranking">
-                ${
-  keyword.previousRanking.flag === "Same" ? 
-    locationIcon : keyword.previousRanking.flag === "Improved" ? 
-      topArrowIcon : downArrowIcon}
-                <span>
-                    ${keyword.previousRanking.value}
-                </span>
-                ${
-  keyword.previousRanking.flag === "Improved" ?
-    `<span class="ranking-change improve">
-        ${keyword.previousRanking.change > 0 ? 
-    `+ ${keyword.previousRanking.change}` : 
-    keyword.previousRanking.change}
-    </span>` : 
-    keyword.previousRanking.flag === "Decreased" ?
-      `<span class="ranking-change decrease">
-        ${keyword.previousRanking.change > 0 ? 
-    `+ ${keyword.previousRanking.change}` : 
-    keyword.previousRanking.change}
-    </span>` : ''
-}
-            </p>
-        </td>
-        <td>
-            <p class="ranking-change-wrapper"> 
-                ${
-  keyword.initialRanking.flag === "Same" ?
-    locationIcon : keyword.initialRanking.flag === "Improved" ?
-      topArrowIcon : downArrowIcon}
-                <span>
-                    ${keyword.initialRanking.value}
-                </span>
-                ${
-  keyword.initialRanking.flag === "Improved" ?
-    `<span class="ranking-change improve">
-        ${keyword.initialRanking.change > 0 ?
-    `+ ${keyword.initialRanking.change}` :
-    keyword.initialRanking.change}
-    </span>` :
-    keyword.initialRanking.flag === "Decreased" ?
-      `<span class="ranking-change decrease">
-        ${keyword.initialRanking.change > 0 ?
-    `+ ${keyword.initialRanking.change}` :
-    keyword.initialRanking.change}
-    </span>` : ''
-}
-            </p>
-        </td>
-    </tr>`;
-  });
+const template = function (data: Data, tableChart: IChartAndTable[]): string {
+  let tableAndCanvas = '';
   const xAxis: string = JSON.stringify(data.xAxis);
-  const series: string = JSON.stringify(data.keywords.map((keyword: Keyword) => {
-    return {
-      label: keyword.keyword.toUpperCase(),
-      data: keyword.rankings,
-      pointRadius: 5,
-      lineTension: 0.5,
-    };
-  }));
+  const charts = JSON.stringify(tableChart.map((item) => item.chart));
+  tableChart.forEach((item: IChartAndTable, index) => {
+    tableAndCanvas += `<div style="padding-top: 5px;">
+      <div class="relative-100">
+        <p class="chart-header">
+          <span class="chart-header-bullet"></span>
+          Keywords Ranking on First Page in Major Search Engines
+        </p>
+        <div class="dotted-line"></div>
+      </div>
+      <div>
+        <canvas id="myChart${index}"></canvas>
+      </div>
+      <div class="relative-100 mb-20">
+          <p class="bellow-chart-header">
+              <img 
+                src="https://i.ibb.co/1b5HNfR/google.png" 
+                style="height: 30px;width: 30px;"
+                alt="google" border="0">
+              <span class="google">Google (US)</span>
+          </p>
+          <div class="dotted-line"></div>
+      </div>
+      <div>
+        <table class="table">
+            <tr style="background-color:#7768DF;color: #ffffff;">
+                <th class="tHead-first">Keyword</th>
+                <th>Current <br> ${data.currentDate.toString()}</th>
+                <th>Previous <br> ${data.previousDate.toString()}</th>
+                <th class="tHead-last">Initial Ranking</th>
+            </tr>
+            ${item.table}
+        </table>
+      </div>
+    </div>
+`;
+  });
   return `<!DOCTYPE html>
   <html lang="en">
         <head>
@@ -127,7 +76,7 @@ const template = function (data: Data): string {
                     }
                 }
                 th{
-                    padding: 10px 15px;
+                    padding: 8px 15px;
                     text-align: center;
                 }
                 tr{
@@ -144,7 +93,7 @@ const template = function (data: Data): string {
                     font-size: 12px;
                 }
                 td{
-                    padding: 5px 15px;
+                    padding: 3px 15px;
                     text-align: center;
                 }
                 tr:last-child td:first-child{
@@ -329,142 +278,118 @@ const template = function (data: Data): string {
                     <p class="ranking-text">Ranking</p>
                     <div class="dotted-line"></div>
                 </div>
-                  <div class="widget-wrapper">
-                      <div class="widget">
-                          <img 
-                            src="https://i.ibb.co/NrrVPxH/first-Icon.png" 
-                            alt="FirstIcon" 
-                            style="margin-left: 10px;">
-                          <span class="widget-number">${data.totalKeywords}</span>
-                          <span class="widget-text">Total Keywords</span>
-                      </div>
-                      <div class="widget">
-                          <img 
-                            src="https://i.ibb.co/VtnNC8r/fourth-Icon.png" 
-                            alt="FirstIcon" 
-                            style="margin-left: 10px;">
-                          <span class="widget-number">${data.improvedRanking ?? 'N/A'}</span>
-                          <span class="widget-text">Ranking Changes<br>Improved</span>
-                      </div>
-                  </div>
-                  <div class="relative-100">
-                      <p class="chart-header">
-                          <span class="chart-header-bullet"></span>
-                          Keywords Ranking on First Page in Major Search Engines
-                      </p>
-                      <div class="dotted-line"></div>
-                  </div>
-                <div>
-                <canvas id="myChart"></canvas>
+                <div class="widget-wrapper">
+                    <div class="widget">
+                        <img 
+                          src="https://i.ibb.co/NrrVPxH/first-Icon.png" 
+                          alt="FirstIcon" 
+                          style="margin-left: 10px;">
+                        <span class="widget-number">${data.totalKeywords}</span>
+                        <span class="widget-text">Total Keywords</span>
+                    </div>
+                    <div class="widget">
+                        <img 
+                          src="https://i.ibb.co/VtnNC8r/fourth-Icon.png" 
+                          alt="FirstIcon" 
+                          style="margin-left: 10px;">
+                        <span class="widget-number">${data.improvedRanking ?? 'N/A'}</span>
+                        <span class="widget-text">Ranking Changes<br>Improved</span>
+                    </div>
                 </div>
-          <div class="relative-100 mb-20">
-              <p class="bellow-chart-header">
-                  <img 
-                    src="https://i.ibb.co/1b5HNfR/google.png" 
-                    style="height: 30px;width: 30px;"
-                    alt="google" border="0">
-                  <span class="google">Google (US)</span>
-              </p>
-              <div class="dotted-line"></div>
-          </div>
-          <div>
-              <table class="table">
-                  <tr style="background-color:#7768DF;color: #ffffff;">
-                      <th class="tHead-first">Keyword</th>
-                      <th>Current <br> ${data.currentDate.toString()}</th>
-                      <th>Previous <br> ${data.previousDate.toString()}</th>
-                      <th class="tHead-last">Initial Ranking</th>
-                  </tr>
-                  ${tableRows}
-              </table>
-          </div>
-          <div style="display: flex;margin-top: 30px;">
-              <div style="display: flex;">
-                  <div style="width: 10%">
-                      <img 
-                      src="https://i.ibb.co/hL4F3yh/white-Location.png" 
-                      alt="white-Location" 
-                      border="0">
-                  </div>
-                  <p class="footer-text">
-                      Represents the website rankings in the local map pack
-                       in the google search results.
-                      <br>
-                      <span class="footer-text-bullet"></span>
-                  </p>
-              </div>
-              <div style="display: flex;">
-                  <div style="width: 10%">
-                  <img 
-                    src="https://i.ibb.co/k55Q2Q1/barChart.png" 
-                    alt="barChart" 
-                    border="0">
-                  </div>
-                  <p class="footer-text">
-                      Represents the website rankings in the knowledge 
-                      panel of google search results.
-                      <br>
-                      <span class="footer-text-bullet"></span>
-                  </p>
-              </div>
-              <div style="display: flex;">
-                  <div style="width: 10%">
-                    <img 
-                      src="https://i.ibb.co/VD77Pcn/image-Icon.png" 
-                      alt="image-Icon" 
-                      border="0">
-                  </div>
-                  <p class="footer-text">
-                      Represents the website rankings in the carousel 
-                      section of google search results.
-                      <br>
-                      <span class="footer-text-bullet"></span>
-                  </p>
-              </div>
-          </div>
+                ${tableAndCanvas}
+                <div style="display: flex;margin-top: 30px;">
+                    <div style="display: flex;">
+                        <div style="width: 10%">
+                            <img 
+                            src="https://i.ibb.co/hL4F3yh/white-Location.png" 
+                            alt="white-Location" 
+                            border="0">
+                        </div>
+                        <p class="footer-text">
+                            Represents the website rankings in the local map pack
+                             in the google search results.
+                            <br>
+                            <span class="footer-text-bullet"></span>
+                        </p>
+                    </div>
+                    <div style="display: flex;">
+                        <div style="width: 10%">
+                        <img 
+                          src="https://i.ibb.co/k55Q2Q1/barChart.png" 
+                          alt="barChart" 
+                          border="0">
+                        </div>
+                        <p class="footer-text">
+                            Represents the website rankings in the knowledge 
+                            panel of google search results.
+                            <br>
+                            <span class="footer-text-bullet"></span>
+                        </p>
+                    </div>
+                    <div style="display: flex;">
+                        <div style="width: 10%">
+                          <img 
+                            src="https://i.ibb.co/VD77Pcn/image-Icon.png" 
+                            alt="image-Icon" 
+                            border="0">
+                        </div>
+                        <p class="footer-text">
+                            Represents the website rankings in the carousel 
+                            section of google search results.
+                            <br>
+                            <span class="footer-text-bullet"></span>
+                        </p>
+                    </div>
+                </div>
+                <div>
+      </div>
           </div>
           <script>
-              const ctx = document.getElementById('myChart');
-              const series = JSON.parse('${series}');
-              const xAxis = JSON.parse('${xAxis}');
-              new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: xAxis,
-                datasets: series
-              },
-              options: {
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: "#fff",
-                    },
-                  },
-                  x: {
-                    ticks: {
-                        color: "#fff",
-                    },
-                    grid: {
-                        display: false,
-                    }
-                  }
+          const charts = JSON.parse('${charts}');
+          for(let i = 0; i < charts.length; i++){
+            new Chart(
+              document.getElementById('myChart' + i), 
+              {
+                type: 'line',
+                data: {
+                  labels: JSON.parse('${xAxis}'),
+                  datasets: charts[i]
                 },
-                bezierCurve: false,
-                plugins: {
-                  legend: {
-                    display: true,
-                    position: 'top',
-                    align: 'start',
-                    labels: {
-                      usePointStyle: true,
-                      color: "#fff",
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        color: "#fff",
+                      },
                     },
+                    x: {
+                      ticks: {
+                        color: "#fff",
+                      },
+                      grid: {
+                        display: false,
+                      }
+                    }
+                  },
+                  bezierCurve: false,
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: 'top',
+                      align: 'start',
+                      labels: {
+                        usePointStyle: true,
+                        color: "#fff",
+                      }
+                    }
                   }
                 }
               }
-            });
-          </script>
+            );
+          }
+            
+        </script>
         </body>
     </html>`;
 };
