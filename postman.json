@@ -1,0 +1,42 @@
+{
+  "info": {
+    "_postman_id": "391fe25a-c4c9-4e59-aa6c-6f07d784e4de",
+    "name": "PDF",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19796990",
+    "_collection_link": "https://myself0786.postman.co/workspace/TRIO-SOFT-TECH~173e9e2e-9a11-4edb-86a8-9c94ccf322a5/collection/19796990-391fe25a-c4c9-4e59-aa6c-6f07d784e4de?action=share&source=collection_link&creator=19796990"
+  },
+  "item": [
+    {
+      "name": "PDF Generation",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"domain\": \"www.trustthedata.net\",\n\t\"tracking\": [\n\t\t{\n\t\t\t\"trackingType\": \"mobile\",\n\t\t\t\"local\": true,\n\t\t\t\"keyword\": \"digital marketing\",\n\t\t\t\"rankings\": [\n\t\t\t\t[\"Date.UTC(2024,0,8)\", 42],\n\t\t\t\t[\"Date.UTC(2024,1,8)\", 43],\n\t\t\t\t[\"Date.UTC(2024,2,8)\", 35],\n\t\t\t\t[\"Date.UTC(2024,3,8)\", 45],\n\t\t\t\t[\"Date.UTC(2024,4,8)\", 41],\n\t\t\t\t[\"Date.UTC(2024,5,8)\", 41],\n\t\t\t\t[\"Date.UTC(2024,6,8)\", 43],\n\t\t\t\t[\"Date.UTC(2024,7,8)\", 41],\n\t\t\t\t[\"Date.UTC(2024,8,8)\", 44],\n\t\t\t\t[\"Date.UTC(2024,9,8)\", 42],\n\t\t\t\t[\"Date.UTC(2024,10,8)\", 44],\n\t\t\t\t[\"Date.UTC(2024,11,8)\", 43]\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"trackingType\": \"desktop\",\n\t\t\t\"local\": true,\n\t\t\t\"keyword\": \"digital marketing\",\n\t\t\t\"rankings\": [\n\t\t\t\t[\"Date.UTC(2024,0,8)\", 2],\n\t\t\t\t[\"Date.UTC(2024,1,8)\", 3],\n\t\t\t\t[\"Date.UTC(2024,2,8)\", 15],\n\t\t\t\t[\"Date.UTC(2024,3,8)\", 15],\n\t\t\t\t[\"Date.UTC(2024,4,8)\", 17],\n\t\t\t\t[\"Date.UTC(2024,5,8)\", 21],\n\t\t\t\t[\"Date.UTC(2024,6,8)\", 13],\n\t\t\t\t[\"Date.UTC(2024,7,8)\", 8],\n\t\t\t\t[\"Date.UTC(2024,8,8)\", 3],\n\t\t\t\t[\"Date.UTC(2024,9,8)\", 4],\n\t\t\t\t[\"Date.UTC(2024,10,8)\", 4],\n\t\t\t\t[\"Date.UTC(2024,11,8)\", 19]\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"trackingType\": \"maps\",\n\t\t\t\"local\": true,\n\t\t\t\"keyword\": \"website building\",\n\t\t\t\"rankings\": [\n\t\t\t\t[\"Date.UTC(2024,0,8)\", 15],\n\t\t\t\t[\"Date.UTC(2024,1,8)\", 13],\n\t\t\t\t[\"Date.UTC(2024,2,8)\", 12],\n\t\t\t\t[\"Date.UTC(2024,3,8)\", 9],\n\t\t\t\t[\"Date.UTC(2024,4,8)\", 11],\n\t\t\t\t[\"Date.UTC(2024,5,8)\", 14],\n\t\t\t\t[\"Date.UTC(2024,6,8)\", 7],\n\t\t\t\t[\"Date.UTC(2024,7,8)\", 7],\n\t\t\t\t[\"Date.UTC(2024,8,8)\", 6],\n\t\t\t\t[\"Date.UTC(2024,9,8)\", 5],\n\t\t\t\t[\"Date.UTC(2024,10,8)\", 4],\n\t\t\t\t[\"Date.UTC(2024,11,8)\", 3]\n\t\t\t]\n\t\t}\n\t]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:5500/api/v1/pdf/generate",
+          "host": [
+            "localhost"
+          ],
+          "port": "5500",
+          "path": [
+            "api",
+            "v1",
+            "pdf",
+            "generate"
+          ]
+        },
+        "description": "PDF Generation"
+      },
+      "response": []
+    }
+  ]
+}

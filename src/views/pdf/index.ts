@@ -14,7 +14,7 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
         <div class="dotted-line"></div>
       </div>
       <div>
-        <canvas id="myChart${index}"></canvas>
+        <canvas id="myChart${index}" height="200px"></canvas>
       </div>
       <div class="relative-100 mb-20">
           <p class="bellow-chart-header">
@@ -58,6 +58,10 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
             <script 
                 src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <style>
+                canvas{
+                    height: 230px!important;
+                    width: 100%!important;
+                }
                 html {
                     -webkit-print-color-adjust: exact;
                     print-color-adjust: exact;
@@ -65,6 +69,7 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
                 body {
                     margin: 0;
                     font-family: Arial;
+                    background-color: #2D2973 !important;
                 }
                 @media print {
                     @page {
@@ -76,7 +81,7 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
                     }
                 }
                 th{
-                    padding: 8px 15px;
+                    padding: 2px 15px;
                     text-align: center;
                 }
                 tr{
@@ -93,7 +98,7 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
                     font-size: 12px;
                 }
                 td{
-                    padding: 3px 15px;
+                    padding: 0px 15px;
                     text-align: center;
                 }
                 tr:last-child td:first-child{
@@ -297,7 +302,7 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
                     </div>
                 </div>
                 ${tableAndCanvas}
-                <div style="display: flex;margin-top: 30px;">
+                <div style="display: flex;margin-top: 20px;">
                     <div style="display: flex;">
                         <div style="width: 10%">
                             <img 
