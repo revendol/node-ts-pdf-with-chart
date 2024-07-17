@@ -76,12 +76,12 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
                           margin: 0;
                           background-color: #2D2973 !important;
                       }
-                    .background {
+                    html, body, .background {
                         background-color: #2D2973!important;
                     }
                 }
                 th{
-                    padding: 2px 15px;
+                    padding: 0 15px;
                     text-align: center;
                 }
                 tr{
@@ -115,6 +115,7 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
                   align-items: center; 
                   text-align: center;
                   justify-content: center;
+                  margin: 0;
                 }
                 .ranking-change-wrapper{
                   display: flex; 
@@ -131,6 +132,7 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
                   align-items: center; 
                   text-align: center;
                   justify-content: center;
+                  margin: 0;
                 }
                 .page-header{
                     font-size: 40px;
@@ -274,7 +276,7 @@ const template = function (data: Data, tableChart: IChartAndTable[]): string {
             </style>
         </head>
         <body>
-            <div class="background" style="padding: 50px;">
+            <div class="background" style="padding: 40px 50px;">
                 <h1 class="page-header">SEARCH ENGINE RANKINGS</h1>
                 <h2 style="text-align: center;margin-bottom: 55px;">
                     <span class="domain">${data.domain ?? 'N/A'}</span>
